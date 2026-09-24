@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Special Question ❤️</title>
+  <style>
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    }
+    
+    body {
+      background-color: #ffffff;
+      background-image: url('bg.png');
+      background-repeat: repeat;
+      background-size: 380px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      padding: 40px;
+      border-radius: 24px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+      max-width: 420px;
+      width: 100%;
+      position: relative;
+    }
+
+    .hidden { display: none !important; }
+
+    /* Fixes punctuation flipping for both Arabic and English */
+    h1, h2, p, button, span, div {
+      unicode-bidi: plaintext;
+      text-align: center;
+    }
+
+    h1, h2 { color: #d63384; margin-bottom: 15px; font-weight: 700; }
+    p { color: #555; margin-bottom: 20px; font-size: 1.1rem; line-height: 1.6; }
+    
+    button {
+      background-color: #ff4b2b;
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+      margin: 10px;
+      display: inline-block;
+    }
+    button:hover { background-color: #ff416c; transform: scale(1.05); }
+
+    input[type="date"] {
+      padding: 10px 15px;
+      font-size: 1rem;
+      border-radius: 12px;
+      border: 2px solid #ffccd5;
+      outline: none;
+      margin-bottom: 10px;
+      font-family: inherit;
+    }
+    .error { color: #e74c3c; font-size: 0.9rem; margin-top: 5px; font-weight: 500; }
+
+    /* Button Container & Dodging Button Alignment */
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 20px;
+      margin-top: 25px;
+      position: relative;
+      min-height: 110px;
+    }
+
+    .btn-container button {
+      margin: 0;
+    }
+
+    .no-wrapper { 
+      display: flex; 
+      flex-direction: column;
+      align-items: center;
+      position: relative; 
+    }
+
+    #no-btn { 
+      position: absolute; 
+      top: 0;
+      transition: all 0.2s ease; 
+      white-space: nowrap; 
+      margin: 0;
+    }
+
+    .subtext { 
+      font-size: 0.85rem; 
+      color: #888; 
+      margin-top: 55px; 
+      display: block; 
+      pointer-events: none;
+    }
+
+    .box-note {
+      margin-top: 15px;
+      font-size: 0.95rem;
+      color: #666;
+    }
+
+    .fade-in { animation: fadeIn 0.6s ease-in-out forwards; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Soft Background Audio -->
+  <audio id="bg-music" loop>
+    <source src="bg-song.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Screen 1: Readiness Confirmation -->
+  <div class="card fade-in" id="screen1">
+    <p>Did you followed the instructions and you're ready?</p>
+    <button onclick="startApp()">Yes!</button>
+  </div>
+
+  <!-- Screen 2: Welcome -->
+  <div class="card hidden" id="screen2">
+    <h1>Hello ya 7elo ❤️</h1>
+    <p>I guess it's your first time seeing me in this version, so welcome to Mohammad's surprises</p>
+    <button onclick="goToScreen(3)">Let's start ✨</button>
+  </div>
+
+  <!-- Screen 3: Date Check -->
+  <div class="card hidden" id="screen3">
+    <h2>Small quiz 😉</h2>
+    <p>Guess the date to unlock</p>
+    <input type="date" id="dateInput">
+    <br>
+    <button onclick="checkDate()">Unlock</button>
+    <div id="errorMsg" class="error hidden">Oops! Wrong date, try again ❤️</div>
+  </div>
+
+  <!-- Screen 4: Bag Search Instruction -->
+  <div class="card hidden" id="screen4">
+    <p>Go to the bag that Rafa gave you ya 7elo and search for a something, but don't open it until you move to the next</p>
+    <button onclick="goToScreen(5)">Next</button>
+  </div>
+
+  <!-- Screen 5: The Proposal -->
+  <div class="card hidden" id="screen5">
+    <h2>Do you accept to be my girlfriend and everything? 💖</h2>
+    <div class="btn-container">
+      <button id="yesBtn" onclick="acceptProposal()">Yes!</button>
+      <div class="no-wrapper">
+        <button id="no-btn">No</button>
+        <span class="subtext">(don't even try 😜)</span>
+      </div>
+    </div>
+    <p class="box-note">You can open the box after you accept</p>
+  </div>
+
+  <!-- Screen 6: Dedicated Song Page -->
+  <div class="card hidden" id="screen6">
+    <h2>هيهيهيهي 😛</h2>
+    <p id="songMessage">
+      محلاكي و انتي قايلة لا :) هيححح تالا يا تالا مش عارف من وين ابلش و شو اخلي و شو ما اخلي، الي بدي احكيلك ياه انو انتي جد سحرتيني غيرتيني عملتي شي ما حدا قدر ولا عرف يعملو من قبل، على قصر المدة الي تعرفنا فيها على بعض على قد ما انا حاسس بعرفك من عشر سنين، حبيتك بدون ما اعرف شي عنك حبيتك من حكيك حبيتك من اسلوبك حبيتك من كلامك حبيتك من سوالفك حبيتك بكلشي. على قد ما ما كنت متوقع اتخد هيك قرار هلئ على قد ما ما بتعرفي قد ايش حاسس هاد اكتر شي و اكتر قرار صح عملتو بحياتي. ما بدي اشوفك غير مبسوطة و ناجحك بحياتك و انا واثق انك رح تعملي هالشي زي اسمي. مرة سالتيني شو الاغنية الي بس تسمعها بتتزكرني او هيك شي ف هيها تحت اسمعيها بس تخلصي قراءة. و لو اضلني احكي من هون لبكرا مش ححخلص بس اخر شي بدي احكيلك ياه اني بحبكككك بعشق الارض الي بتمشي عليها 🤍
+    </p>
+    <p><strong>الك و بس 🎶</strong></p>
+    <audio id="main-song" controls style="width: 100%; margin-top: 10px; margin-bottom: 15px;">
+      <source src="elak-w-bas.mp3" type="audio/mpeg">
+    </audio>
+    <br>
+    <button onclick="goToScreen(7)">Next ✨</button>
+  </div>
+
+  <!-- Screen 7: Final Page -->
+  <div class="card hidden" id="screen7">
+    <h2>اخرر شي ❤️</h2>
+    <p id="finalMessage">
+      وربييي لو تحكيلي " و مافيشش ياعينييي حاجة بايدياااا" رح اوصلك 😭 بحبكك كتيرة يهبولة
+    </p>
+  </div>
+
+  <script>
+    // Set target date to 24 July 2026 (Format: YYYY-MM-DD)
+    const CORRECT_DATE = "2026-07-24"; 
+
+    const bgMusic = document.getElementById('bg-music');
+    const mainSong = document.getElementById('main-song');
+
+    // Pause background music when main song starts playing
+    mainSong.addEventListener('play', () => {
+      bgMusic.pause();
+    });
+
+    // Resume background music if main song is paused
+    mainSong.addEventListener('pause', () => {
+      bgMusic.play().catch(() => {});
+    });
+
+    // Resume background music when main song finishes
+    mainSong.addEventListener('ended', () => {
+      bgMusic.play().catch(() => {});
+    });
+
+    function startApp() {
+      // Volume level set to 0.005 (0.5% volume)
+      bgMusic.volume = 0.005; 
+      bgMusic.play().catch(() => {});
+      goToScreen(2);
+    }
+
+    function goToScreen(screenNumber) {
+      document.querySelectorAll('.card').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById(`screen${screenNumber}`);
+      target.classList.remove('hidden');
+      target.classList.add('fade-in');
+    }
+
+    function checkDate() {
+      const inputVal = document.getElementById('dateInput').value;
+      if (inputVal === CORRECT_DATE) {
+        goToScreen(4);
+      } else {
+        document.getElementById('errorMsg').classList.remove('hidden');
+      }
+    }
+
+    // Dodging "No" button logic
+    const noBtn = document.getElementById('no-btn');
+    const moveNoButton = () => {
+      const x = (Math.random() - 0.5) * 260;
+      const y = (Math.random() - 0.5) * 200;
+      noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    };
+
+    noBtn.addEventListener('mouseover', moveNoButton);
+    noBtn.addEventListener('touchstart', moveNoButton);
+
+    function acceptProposal() {
+      goToScreen(6);
+    }
+  </script>
+</body>
+</html>
